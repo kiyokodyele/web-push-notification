@@ -12,13 +12,13 @@ const port = 4000
 //app.get('/', (req, res) => res.send('Hello World!'))
 app.use(express.static('public'))
 
-const dummyDb = {
-    subscription: null
-} //dummy in memory store
+var dummyDb = []; //dummy in memory store
+
 const saveToDatabase = async subscription => {
     // Since this is a demo app, I am going to save this in a dummy in memory store. Do not do this in your apps.
     // Here you should be writing your db logic to save it.
-    dummyDb.subscription = subscription
+    dummyDb.push( {'subscription': subscription} )
+    //console.log(dummyDb);
 }
 
 // The new /save-subscription endpoint
@@ -28,6 +28,7 @@ app.post('/save-subscription', async (req, res) => {
     res.json({
         message: 'success'
     })
+    
 })
 
 const vapidKeys = {
@@ -45,13 +46,18 @@ webpush.setVapidDetails(
 //function to send the notification to the subscribed device
 const sendNotification = (subscription, dataToSend) => {
     webpush.sendNotification(subscription, dataToSend)
-}
-
+  }
+  
 //route to test send notification
 app.get('/send-notification', (req, res) => {
-    const subscription = dummyDb.subscription //get subscription from your databse here.
+    const subscription = dummyDb //get subscription from your databse here.
     const message = 'Hello World'
-    sendNotification(subscription, message)
+    //console.log(subscription)
+    //subscription.forEach( sendNotificationLog(subscription, message) )
+    //console.log(subscription[0])
+    for (let i=0; i<subscription.length; i++) {
+        sendNotification(subscription[i].subscription, message)
+    }
     res.json({
         message: 'message sent'
     })
