@@ -47,7 +47,7 @@ webpush.setVapidDetails(
 const sendNotification = (subscription, dataToSend) => {
     webpush.sendNotification(subscription, dataToSend)
   }
-  
+
 //route to test send notification
 app.get('/send-notification', (req, res) => {
     const subscription = dummyDb //get subscription from your databse here.
