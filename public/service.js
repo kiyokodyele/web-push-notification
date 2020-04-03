@@ -57,8 +57,58 @@ self.addEventListener('push', function (event) {
 
 const showLocalNotification = (title, body, swRegistration) => {
   const options = {
-    body,
-    // here you can add more properties like icon, image, vibrate, etc.
-  }
+    body,actions: [
+      {
+        action: 'coffee-action',
+        title: 'Coffee',
+        icon: 'https://vignette.wikia.nocookie.net/fairytail/images/c/c3/Erza%27s_picture.png/revision/latest?cb=20190929085837'
+      },
+      {
+        action: 'doughnut-action',
+        title: 'Doughnut'
+      },
+      {
+        action: 'gramophone-action',
+        title: 'gramophone'
+      },
+      {
+        action: 'atom-action',
+        title: 'Atom'
+      }
+    ]
+  };
   swRegistration.showNotification(title, options)
 }
+
+
+self.addEventListener('notificationclick', function(event) {
+  if (!event.action) {
+    // Was a normal notification click
+    event.preventDefault(); // prevent the browser from focusing the Notification's tab
+window.open('http://www.mozilla.org', '_blank');
+    console.log('Notification Click.');
+    return;
+  }
+
+  switch (event.action) {
+    case 'coffee-action':
+      console.log('User ❤️️\'s coffee.');
+      event.notification.close();
+event.waitUntil(
+  clients.openWindow('https://google.com/')
+);
+      break;
+    case 'doughnut-action':
+      console.log('User ❤️️\'s doughnuts.');
+      break;
+    case 'gramophone-action':
+      console.log('User ❤️️\'s music.');
+      break;
+    case 'atom-action':
+      console.log('User ❤️️\'s science.');
+      break;
+    default:
+      console.log(`Unknown action clicked: '${event.action}'`);
+      break;
+  }
+});
